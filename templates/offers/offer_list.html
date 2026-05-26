@@ -1,0 +1,298 @@
+
+{% load static %}
+
+{% block content %}
+
+<style>
+  :root {
+    --orange: #FF6600;
+    --orange-dark: #E65A00;
+    --orange-glow: rgba(255,102,0,0.25);
+    --white: #ffffff;
+    --bg-glass: rgba(255,255,255,0.75);
+    --text-dark: #1f1f1f;
+    --text-gray: #666;
+    --success: #28A745;
+    --danger: #DC3545;
+  }
+
+  /* ========== BACKGROUND ========== */
+  .offers-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(circle at 20% 30%, #fff3e6 0%, #ffe8d6 50%, #ffd9bf 100%);
+    overflow: hidden;
+  }
+  .offers-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('{% static "images/of-bg.webp" %}');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.1;
+    mix-blend-mode: overlay;
+  }
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+    opacity: 0.08;
+    pointer-events: none;
+    animation: float 20s infinite ease-in-out;
+  }
+  .orb:nth-child(1) { width: 450px; height: 450px; top: -10%; left: -5%; animation-delay: 0s; }
+  .orb:nth-child(2) { width: 350px; height: 350px; bottom: -8%; right: -5%; animation-delay: -7s; }
+  .orb:nth-child(3) { width: 250px; height: 250px; top: 45%; left: 40%; animation-delay: -14s; }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25% { transform: translate(40px, -30px) scale(1.08); }
+    50% { transform: translate(-30px, 40px) scale(0.92); }
+    75% { transform: translate(-40px, -20px) scale(1.05); }
+  }
+
+  /* ========== LAYOUT ========== */
+  .offers-page {
+    min-height: 100vh;
+    padding: 120px 25px 60px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ========== HEADER ========== */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .page-title {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--orange-dark), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    animation: titlePulse 3s infinite alternate;
+  }
+  @keyframes titlePulse {
+    0% { filter: drop-shadow(0 0 5px rgba(255,102,0,0.3)); }
+    100% { filter: drop-shadow(0 0 15px rgba(255,102,0,0.6)); }
+  }
+  .btn-add {
+    background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+    color: white;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 12px 25px var(--orange-glow);
+    transition: all 0.3s ease;
+  }
+  .btn-add:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(255,102,0,0.4);
+  }
+
+  /* ========== OFFERS GRID ========== */
+  .offers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+  }
+
+  /* ========== OFFER CARD ========== */
+  .offer-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06), 0 8px 20px var(--orange-glow);
+    overflow: hidden;
+    transition: all 0.4s ease;
+    animation: cardUp 0.6s cubic-bezier(0.2,0.9,0.3,1);
+    display: flex;
+    flex-direction: column;
+  }
+  .offer-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.12), 0 12px 30px var(--orange-glow);
+  }
+  @keyframes cardUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Image */
+  .offer-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #ffe0cc;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .offer-card:hover .offer-img {
+    transform: scale(1.05);
+  }
+
+  /* Status badge */
+  .status-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+  }
+  .badge-active { background: var(--success); }
+  .badge-inactive { background: var(--danger); }
+
+  /* Card body */
+  .offer-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .offer-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+  }
+  .offer-discount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--orange);
+    margin: 0;
+  }
+  .offer-id {
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    margin: 0;
+  }
+  .offer-actions {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn-action {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  .btn-edit {
+    background: #FFF0E6;
+    color: var(--orange);
+  }
+  .btn-edit:hover { background: var(--orange); color: white; }
+  .btn-delete {
+    background: #FEE2E2;
+    color: var(--danger);
+  }
+  .btn-delete:hover { background: var(--danger); color: white; }
+
+  /* Empty state */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+    font-size: 1.2rem;
+    color: var(--text-gray);
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .offers-page {
+      padding: 10px 15px 40px;
+    }
+    .page-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .btn-add {
+      width: 100%;
+      justify-content: center;
+    }
+    .offers-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<!-- ========== BACKGROUND ========== -->
+<div class="offers-bg">
+  <div class="orb"></div>
+  <div class="orb"></div>
+  <div class="orb"></div>
+</div>
+
+<!-- ========== CONTENT ========== -->
+<div class="offers-page">
+  <div class="page-header">
+    <h1 class="page-title">🎁 Offers Management</h1>
+    <a href="{% url 'offer_create' %}" class="btn-add">
+      <span>+</span> Add Offer
+    </a>
+  </div>
+
+  <div class="offers-grid">
+    {% for offer in offers %}
+    <div class="offer-card" style="position: relative;">
+      <!-- Image -->
+      {% if offer.image %}
+        <img src="{{ offer.image.url }}" alt="{{ offer.title }}" class="offer-img">
+      {% else %}
+        <div style="height: 200px; background: linear-gradient(135deg, #ffe0cc, #fff5eb); display: flex; align-items: center; justify-content: center; color: var(--orange); font-size: 2rem;">
+          🖼️
+        </div>
+      {% endif %}
+      
+      <!-- Status Badge -->
+      <span class="status-badge {% if offer.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+        {% if offer.is_active %}Active{% else %}Inactive{% endif %}
+      </span>
+
+      <div class="offer-body">
+        <p class="offer-id">#{{ offer.id }}</p>
+        <h2 class="offer-title">{{ offer.title }}</h2>
+        <p class="offer-discount">{{ offer.discount }}</p>
+        <div class="offer-actions">
+          <a href="{% url 'offer_update' offer.id %}" class="btn-action btn-edit">✏️ Edit</a>
+          <a href="{% url 'offer_delete' offer.id %}" class="btn-action btn-delete">🗑️ Delete</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+      <p>🎯 No offers found. Start by adding a new one!</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

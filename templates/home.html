@@ -1,0 +1,138 @@
+
+{% block content %}
+
+<section class="hero-section py-5 bg-light">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">
+            Welcome to ChecknDrop
+        </h1>
+
+        <p class="lead mt-3">
+            Fast, reliable and secure delivery solutions for businesses and individuals.
+        </p>
+
+        <a href="{% url 'contact_us' %}" class="btn btn-dark btn-lg mt-3">
+            Contact Us
+        </a>
+    </div>
+</section>
+<section class="offers-section">
+
+    <div class="section-title">
+
+        <h2>
+            Latest Offers
+        </h2>
+
+        <p>
+            Grab exciting discounts and deals
+        </p>
+
+    </div>
+
+    <div class="offers-grid">
+
+        {% for offer in offers %}
+
+        <div class="offer-card">
+
+            <img
+                src="{{ offer.image.url }}"
+                alt="{{ offer.title }}"
+            >
+
+            <div class="offer-content">
+
+                <span class="discount-badge">
+                    {{ offer.discount }}
+                </span>
+
+                <h3>
+                    {{ offer.title }}
+                </h3>
+
+                <p>
+                    {{ offer.description|truncatechars:100 }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>
+            No offers available.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<section class="py-5">
+    <div class="container">
+        <div class="row text-center">
+
+            <div class="col-md-4">
+                <h3>Fast Delivery</h3>
+                <p>Quick and efficient parcel handling.</p>
+            </div>
+
+            <div class="col-md-4">
+                <h3>Secure Service</h3>
+                <p>Your shipments are protected end to end.</p>
+            </div>
+
+            <div class="col-md-4">
+                <h3>24/7 Support</h3>
+                <p>Always available to help you.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section>
+    <div class="updates-grid">
+
+        {% for update in latest_updates %}
+
+        <div class="update-card">
+
+            {% if update.image %}
+
+                <img
+                    src="{{ update.image.url }}"
+                    alt="{{ update.title }}"
+                >
+
+            {% endif %}
+
+            <div class="update-content">
+
+                <h3>
+                    {{ update.title }}
+                </h3>
+
+                <p>
+                    {{ update.short_description|truncatechars:120 }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>
+            No updates available.
+        </p>
+
+        {% endfor %}
+
+    </div>
+</section>
+
+{% endblock %}

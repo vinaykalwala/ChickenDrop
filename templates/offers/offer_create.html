@@ -1,0 +1,615 @@
+
+{% load static %}
+
+{% block title %}Add Offer - HungerFresh Admin{% endblock %}
+
+{% block content %}
+
+<style>
+    /* ========================================
+       PREMIUM ADD OFFER PAGE
+       Top/Bottom Split: Light Orange + Food Image
+       Unique form fields with different shapes
+       No breadcrumb/links on top
+    ======================================== */
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    /* Top/Bottom Split Background */
+    .split-bg-top {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 38%;
+        background: linear-gradient(145deg, #fff5ec 0%, #ffe8d9 100%);
+        z-index: 0;
+    }
+    
+   .split-bg-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 62%;
+    z-index: 0;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255, 153, 0, 0.25),
+        rgba(0,0,0,0.3)
+    ),
+    url('{% static "images/bg4.jpg" %}');
+
+    background-size: cover;
+    background-position: center;
+
+    filter: blur(2px);
+    -webkit-filter: blur(2px);
+
+    transform: scale(1.05);
+}
+    
+    /* Orange Overlay on Bottom Image */
+    .split-bg-bottom::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,122,0,0.15), rgba(255,159,58,0.05));
+        pointer-events: none;
+    }
+    
+    /* Wave Divider */
+    .wave-divider {
+        position: fixed;
+        bottom: 62%;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        background: linear-gradient(135deg, #ffe8d9 0%, #f5f7fb 100%);
+        clip-path: polygon(0% 0%, 100% 100%, 100% 0%, 0% 100%);
+        opacity: 0.6;
+        z-index: 0;
+    }
+    
+    /* Main Container */
+    .offer-container {
+        max-width: 750px;
+        width: 90%;
+        margin: 120px auto 60px;
+        position: relative;
+        z-index: 20;
+    }
+    
+    /* Main Card - Glassmorphism */
+    .form-card {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(10px);
+        border-radius: 32px;
+        box-shadow: 0 25px 50px -12px rgba(0,0,0,0.2);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255,122,0,0.15);
+    }
+    
+    .form-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    /* Header with Orange Gradient */
+    .card-header-orange {
+        background: linear-gradient(135deg, #ff7a00, #ff9f3a);
+        padding: 30px 35px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-header-orange::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+    
+    .card-header-orange::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 150px;
+        height: 150px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+        animation: pulseLight 4s infinite;
+    }
+    
+    @keyframes pulseLight {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    
+    .card-header-orange h2 {
+        font-size: 30px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .card-header-orange h2 i {
+        font-size: 30px;
+        background: rgba(255,255,255,0.2);
+        padding: 12px;
+        border-radius: 18px;
+    }
+    
+    .card-header-orange p {
+        font-size: 14px;
+        color: rgba(255,255,255,0.92);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 52px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Card Body */
+    .card-body {
+        padding: 38px;
+    }
+    
+    /* Form Styling */
+    .offer-form {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .form-group label {
+        font-weight: 600;
+        font-size: 13px;
+        color: #334155;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: 0.3px;
+    }
+    
+    .form-group label i {
+        color: #ff7a00;
+        width: 18px;
+        font-size: 14px;
+    }
+    
+    .form-group label .required {
+        color: #dc2626;
+        font-size: 11px;
+    }
+    
+    /* Different Shapes for Different Fields */
+    /* Title - Rounded Rectangle */
+    .title-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e2e8f0;
+        border-radius: 50px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        background: #ffffff;
+    }
+    .title-input:focus {
+        outline: none;
+        border-color: #ff7a00;
+        box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+    }
+    
+    /* Image Upload - Dashed Border + Pill Shape */
+    .image-upload {
+        width: 100%;
+        padding: 12px 18px;
+        border: 2px dashed #ff7a00;
+        border-radius: 60px;
+        font-size: 14px;
+        background: rgba(255,122,0,0.03);
+        cursor: pointer;
+    }
+    .image-upload::file-selector-button {
+        background: linear-gradient(135deg, #ff7a00, #ff9f3a);
+        color: white;
+        padding: 8px 20px;
+        border: none;
+        border-radius: 40px;
+        cursor: pointer;
+        font-weight: 600;
+        margin-right: 15px;
+        transition: 0.3s;
+    }
+    .image-upload::file-selector-button:hover {
+        background: #e56a00;
+    }
+    
+    /* Discount - Hexagon Inspired Shape */
+    .discount-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e2e8f0;
+        border-radius: 20px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        background: #ffffff;
+        clip-path: polygon(3% 0%, 97% 0%, 100% 50%, 97% 100%, 3% 100%, 0% 50%);
+    }
+    .discount-input:focus {
+        outline: none;
+        border-color: #ff7a00;
+        box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+    }
+    
+    /* Description - Soft Rounded */
+    .desc-textarea {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e2e8f0;
+        border-radius: 24px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        background: #ffffff;
+        resize: vertical;
+        min-height: 110px;
+    }
+    .desc-textarea:focus {
+        outline: none;
+        border-color: #ff7a00;
+        box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+    }
+    
+    /* Dates - Square with Soft Corners */
+    .date-input {
+        width: 100%;
+        padding: 13px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 16px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        background: #ffffff;
+    }
+    .date-input:focus {
+        outline: none;
+        border-color: #ff7a00;
+        box-shadow: 0 0 0 3px rgba(255,122,0,0.1);
+    }
+    
+    /* Checkbox - Custom Styled */
+    .checkbox-group {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        background: rgba(255,122,0,0.05);
+        padding: 12px 18px;
+        border-radius: 50px;
+        border: 1px solid rgba(255,122,0,0.15);
+    }
+    .checkbox-group input {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #ff7a00;
+    }
+    .checkbox-group label {
+        cursor: pointer;
+        margin: 0;
+    }
+    
+    /* Form Row for Dates */
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    
+    /* Submit Button */
+    .btn-submit {
+        background: linear-gradient(135deg, #ff7a00, #e56a00);
+        color: white;
+        padding: 15px 28px;
+        border: none;
+        border-radius: 60px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        margin-top: 15px;
+    }
+    
+    .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255,122,0,0.35);
+    }
+    
+    /* Cancel Link - No Top Links, Just Bottom */
+    .cancel-link {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .cancel-link a {
+        color: #64748b;
+        text-decoration: none;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: 0.3s;
+        padding: 8px 16px;
+        border-radius: 30px;
+        background: rgba(0,0,0,0.03);
+    }
+    
+    .cancel-link a:hover {
+        color: #dc2626;
+        background: rgba(220,38,38,0.08);
+    }
+    
+    /* Error Messages */
+    .errorlist {
+        list-style: none;
+        background: #fef2f2;
+        border-left: 3px solid #ef4444;
+        padding: 8px 12px;
+        border-radius: 12px;
+        margin-top: 5px;
+    }
+    
+    .errorlist li {
+        color: #dc2626;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    small {
+        display: block;
+        margin-top: 5px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 700px) {
+        .offer-container {
+            margin: 80px auto 40px;
+        }
+        .card-header-orange {
+            padding: 22px 25px;
+        }
+        .card-header-orange h2 {
+            font-size: 24px;
+        }
+        .card-header-orange p {
+            margin-left: 0;
+        }
+        .card-body {
+            padding: 25px;
+        }
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        .split-bg-top {
+            height: 35%;
+        }
+        .split-bg-bottom {
+            height: 65%;
+        }
+        .wave-divider {
+            bottom: 65%;
+        }
+        .discount-input {
+            clip-path: none;
+            border-radius: 20px;
+        }
+    }
+    
+    @media (max-width: 500px) {
+        .offer-container {
+            width: 92%;
+            margin: 70px auto 30px;
+        }
+        .card-header-orange h2 {
+            font-size: 20px;
+        }
+        .card-header-orange h2 i {
+            font-size: 20px;
+            padding: 8px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .title-input, .discount-input, .date-input, .desc-textarea {
+            padding: 11px 14px;
+            font-size: 13px;
+        }
+        .btn-submit {
+            padding: 12px 20px;
+            font-size: 14px;
+        }
+        .split-bg-top {
+            height: 30%;
+        }
+        .split-bg-bottom {
+            height: 70%;
+        }
+        .wave-divider {
+            bottom: 70%;
+        }
+    }
+    
+    /* Animation */
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .form-card {
+        animation: slideUp 0.5s ease forwards;
+    }
+</style>
+
+<!-- Top/Bottom Split Background -->
+<div class="split-bg-top"></div>
+<div class="split-bg-bottom"></div>
+<div class="wave-divider"></div>
+
+<div class="offer-container">
+    
+    <!-- Main Form Card - No Breadcrumb Links -->
+    <div class="form-card">
+        <!-- Header -->
+        <div class="card-header-orange">
+            <h2>
+                <i class="fa-solid fa-gift"></i>
+                Add New Offer
+            </h2>
+            <p>
+                <i class="fa-regular fa-circle-info"></i>
+                Create a promotional offer for your customers
+            </p>
+        </div>
+        
+        <!-- Body -->
+        <div class="card-body">
+            
+            <form method="POST" enctype="multipart/form-data" class="offer-form">
+                {% csrf_token %}
+                
+                <!-- Title Field - Rounded Rectangle Shape -->
+                <div class="form-group">
+                    <label for="id_title">
+                        <i class="fa-regular fa-heading"></i> Offer Title <span class="required">*</span>
+                    </label>
+                    <input type="text" name="title" id="id_title" class="title-input" required placeholder="e.g., Summer Special Discount" value="{{ form.title.value|default:'' }}">
+                    {% if form.title.errors %}
+                        <ul class="errorlist"><li><i class="fa-solid fa-circle-exclamation"></i> {{ form.title.errors.0 }}</li></ul>
+                    {% endif %}
+                </div>
+                
+                <!-- Image Field - Dashed Pill Shape -->
+                <div class="form-group">
+                    <label for="id_image">
+                        <i class="fa-regular fa-image"></i> Offer Image <span class="required">*</span>
+                    </label>
+                    <input type="file" name="image" id="id_image" class="image-upload" accept="image/*" required>
+                    <small style="color: #94a3b8;">Upload a high-quality image for the offer (JPG, PNG)</small>
+                    {% if form.image.errors %}
+                        <ul class="errorlist"><li><i class="fa-solid fa-circle-exclamation"></i> {{ form.image.errors.0 }}</li></ul>
+                    {% endif %}
+                </div>
+                
+                <!-- Discount Field - Hexagon Inspired Shape -->
+                <div class="form-group">
+                    <label for="id_discount">
+                        <i class="fa-solid fa-percent"></i> Discount <span class="required">*</span>
+                    </label>
+                    <input type="text" name="discount" id="id_discount" class="discount-input" required placeholder="e.g., 50% OFF, Buy 1 Get 1 Free" value="{{ form.discount.value|default:'' }}">
+                    <small style="color: #94a3b8;">Example: 50% OFF, Flat ₹100 OFF, Buy 1 Get 1</small>
+                    {% if form.discount.errors %}
+                        <ul class="errorlist"><li><i class="fa-solid fa-circle-exclamation"></i> {{ form.discount.errors.0 }}</li></ul>
+                    {% endif %}
+                </div>
+                
+                <!-- Description Field - Soft Rounded Shape -->
+                <div class="form-group">
+                    <label for="id_description">
+                        <i class="fa-regular fa-message"></i> Description <span class="required">*</span>
+                    </label>
+                    <textarea name="description" id="id_description" class="desc-textarea" rows="4" required placeholder="Describe the offer details, terms and conditions...">{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                        <ul class="errorlist"><li><i class="fa-solid fa-circle-exclamation"></i> {{ form.description.errors.0 }}</li></ul>
+                    {% endif %}
+                </div>
+                
+                <!-- Date Row - Square with Soft Corners -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_start_date">
+                            <i class="fa-regular fa-calendar"></i> Start Date <span class="required">*</span>
+                        </label>
+                        <input type="date" name="start_date" id="id_start_date" class="date-input" required value="{{ form.start_date.value|date:'Y-m-d'|default:'' }}">
+                        {% if form.start_date.errors %}
+                            <ul class="errorlist"><li><i class="fa-solid fa-circle-exclamation"></i> {{ form.start_date.errors.0 }}</li></ul>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_end_date">
+                            <i class="fa-regular fa-calendar"></i> End Date <span class="required">*</span>
+                        </label>
+                        <input type="date" name="end_date" id="id_end_date" class="date-input" required value="{{ form.end_date.value|date:'Y-m-d'|default:'' }}">
+                        {% if form.end_date.errors %}
+                            <ul class="errorlist"><li><i class="fa-solid fa-circle-exclamation"></i> {{ form.end_date.errors.0 }}</li></ul>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Is Active Checkbox - Pill Shape -->
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" name="is_active" id="id_is_active" {% if form.is_active.value %}checked{% endif %}>
+                    <label for="id_is_active">
+                        <i class="fa-regular fa-circle-check"></i> Active (Visible to customers)
+                    </label>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">
+                    <i class="fa-regular fa-floppy-disk"></i> Create Offer
+                </button>
+                
+                <!-- Cancel Link - Only Bottom -->
+                <div class="cancel-link">
+                    <a href="{% url 'offer_list' %}">
+                        <i class="fa-regular fa-circle-xmark"></i> Cancel & Go Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

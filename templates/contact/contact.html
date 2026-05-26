@@ -10,7 +10,7 @@
                 <div class="card-body p-5">
 
                     <h2 class="mb-4 text-center">
-                        Contact ChecknDrop
+                        Contact ChickenDrop
                     </h2>
 
                     {% if messages %}
@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label>Email Address</label>
+                            <label>Email</label>
                             {{ form.email }}
                             {{ form.email.errors }}
                         </div>
@@ -55,6 +55,12 @@
                             <label>Message</label>
                             {{ form.message }}
                             {{ form.message.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Captcha</label>
+                            {{ form.captcha }}
+                            {{ form.captcha.errors }}
                         </div>
 
                         <button type="submit"
