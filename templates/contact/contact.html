@@ -1,0 +1,74 @@
+
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-5">
+
+                    <h2 class="mb-4 text-center">
+                        Contact ChecknDrop
+                    </h2>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-success alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label>Full Name</label>
+                            {{ form.full_name }}
+                            {{ form.full_name.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Email Address</label>
+                            {{ form.email }}
+                            {{ form.email.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Phone Number</label>
+                            {{ form.phone_number }}
+                            {{ form.phone_number.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Subject</label>
+                            {{ form.subject }}
+                            {{ form.subject.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Message</label>
+                            {{ form.message }}
+                            {{ form.message.errors }}
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-dark w-100 rounded-pill">
+                            Send Message
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
