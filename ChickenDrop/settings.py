@@ -52,7 +52,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ChickenDrop.urls'
 
-import OPTIONS
+import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
